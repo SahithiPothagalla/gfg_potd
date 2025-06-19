@@ -1,0 +1,29 @@
+public:
+    string caseSort(string& s) {
+        string lower, upper;
+        
+        // Separate characters by case
+        for (char c : s) {
+            if (islower(c))
+                lower.push_back(c);
+            else
+                upper.push_back(c);
+        }
+        
+        // Sort both lists
+        sort(lower.begin(), lower.end());
+        sort(upper.begin(), upper.end());
+        
+        // Merge back while preserving case positions
+        int li = 0, ui = 0;
+        string result = "";
+        
+        for (char c : s) {
+            if (islower(c))
+                result += lower[li++];
+            else
+                result += upper[ui++];
+        }
+        
+        return result;
+    }
