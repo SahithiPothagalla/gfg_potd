@@ -1,0 +1,48 @@
+struct Node {
+    bool isWord;
+    array<Node *, 26> children = {};
+};
+
+class Solution {
+public:
+    string longestString(vector<string> &arr) {
+        sort(arr.begin(), arr.end());
+        Node *trieRoot = buildTrie(arr);
+        
+        string res;
+        for (const string &s : arr) {
+            bool match = traverse(trieRoot, s, 0);
+            
+            if (!match) continue;
+            if (s.size() == res.size() && s < res) res = s;
+            else if (s.size() > res.size()) res = s;
+        }
+        
+        return res;
+    }
+    
+private:
+    Node *buildTrie(const vector<string> &arr) {
+        Node *trie = new Node();
+        trie->isWord = true;
+        for (const string &s : arr) {
+            Node *curr = trie;
+            for (const char ch : s) {
+                if (curr->children[ch - 'a'] == nullptr) {
+                    curr->children[ch - 'a'] = new Node();
+                }
+                curr = curr->children[ch - 'a'];
+            }
+            curr->isWord = true;
+        }
+        return trie;
+    }
+    
+    bool traverse(Node *node, const string &s, int i) {
+        if (node == nullptr || !node->isWord) return false;
+        if (i == s.size()) {
+            return true;
+        }
+        return traverse(node->children[s[i] - 'a'], s, i + 1);
+    }
+};
