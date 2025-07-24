@@ -1,0 +1,16 @@
+class Solution {
+  public:
+    int getLastMoment(int n, vector<int>& left, vector<int>& right) {
+        // Changing ant direction don't affect the timing
+        // since still one ant continues left and the other continues right
+        // so, find ant with largest distance from its edge
+        // left - find maximum value
+        // right - find minimum value adn subscribe it from n
+        // return the larger value
+        int mn = right.size() > 0?
+            *min_element(right.begin(), right.end()): n;
+        int mx = left.size() > 0?
+            *max_element(left.begin(), left.end()): 0;
+        return max(n-mn, mx);
+    }
+};
