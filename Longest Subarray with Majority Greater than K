@@ -1,0 +1,40 @@
+class Solution {
+  public:
+    int longestSubarray(vector<int> &arr, int k) {
+        // Code here
+        int sum=0;
+        int i=0;
+        map<int,int>f;// f[s]--> first idx of any prefix sum (sum<=s)
+        // if()
+        // f[sum]=f[sum-1];
+        int len=0;
+        for(auto &it:arr){
+            if(it>k)it=1;
+            else it=-1;
+            sum+=it;
+            if(sum>0)   if(sum>0)len=max(len,i+1);
+            if(!f.count(sum)){
+                // first time sum --> prefix sum hiabe asche
+                f[sum]=i;//
+                if(f.count(sum-1)){
+                    f[sum]= f[sum-1];// dynamic prgramming
+                len=max(len,i-f[sum-1]);
+                // i, f[s]// (s<sum)
+                }
+             if(!f.count(sum-1)){ f[sum]=i;//
+            
+             }
+            }
+            else {
+                if(f.count(sum-1))
+                len=max(len,i-f[sum-1]);
+                
+            }
+           //cout<<i<<" max len-->"<<len<<" " <<sum<< " "<<f[sum]<<endl;
+            i++;
+        }
+       
+        
+        return len;
+    }
+};
