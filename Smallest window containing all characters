@@ -1,0 +1,34 @@
+class Solution:
+    def smallestWindow(self, s: str, p: str) -> str:
+        mp = [0] * 256
+        sIndex = -1
+        minLen = float('inf')
+
+        # Count characters of pattern
+        for ch in p:
+            mp[ord(ch)] += 1
+
+        c = 0
+        m = len(p)
+        i = 0
+
+        for j in range(len(s)):
+            if mp[ord(s[j])] > 0:
+                c += 1
+            mp[ord(s[j])] -= 1
+
+            # Try to shrink window
+            while c == m:
+                if j - i + 1 < minLen:
+                    sIndex = i
+                    minLen = j - i + 1
+
+                mp[ord(s[i])] += 1
+                if mp[ord(s[i])] > 0:
+                    c -= 1
+                i += 1
+
+        if sIndex == -1:
+            return ""
+        else:
+            return s[sIndex:sIndex + minLen]
