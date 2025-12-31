@@ -1,0 +1,46 @@
+class Solution {
+  public:
+    
+    // Function to reverse linked list
+    Node* reverse(Node* head) {
+        Node* prev = NULL;
+        Node* curr = head;
+        
+        while (curr != NULL) {
+            Node* nextNode = curr->next;
+            curr->next = prev;
+            prev = curr;
+            curr = nextNode;
+        }
+        return prev;
+    }
+    
+    bool isPalindrome(Node *head) {
+        // Edge cases
+        if (head == NULL || head->next == NULL)
+            return true;
+        
+        Node* slow = head;
+        Node* fast = head;
+        
+        // Find middle of the linked list
+        while (fast != NULL && fast->next != NULL) {
+            slow = slow->next;
+            fast = fast->next->next;
+        }
+        
+        // Reverse second half
+        Node* secondHalf = reverse(slow);
+        Node* firstHalf = head;
+        
+        // Compare both halves
+        while (secondHalf != NULL) {
+            if (firstHalf->data != secondHalf->data)
+                return false;
+            firstHalf = firstHalf->next;
+            secondHalf = secondHalf->next;
+        }
+        
+        return true;
+    }
+};
