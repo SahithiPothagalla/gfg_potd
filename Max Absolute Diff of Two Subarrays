@@ -1,0 +1,52 @@
+class Solution {
+public:
+    int maxDiffSubArrays(vector<int>& arr) {
+        int n = arr.size();
+
+        vector<int> leftMax(n), leftMin(n), rightMax(n), rightMin(n);
+
+        // Left maximum subarray sums
+        int curr = arr[0], best = arr[0];
+        leftMax[0] = best;
+        for (int i = 1; i < n; i++) {
+            curr = max(arr[i], curr + arr[i]);
+            best = max(best, curr);
+            leftMax[i] = best;
+        }
+
+        // Left minimum subarray sums
+        curr = best = arr[0];
+        leftMin[0] = best;
+        for (int i = 1; i < n; i++) {
+            curr = min(arr[i], curr + arr[i]);
+            best = min(best, curr);
+            leftMin[i] = best;
+        }
+
+        // Right maximum subarray sums
+        curr = best = arr[n - 1];
+        rightMax[n - 1] = best;
+        for (int i = n - 2; i >= 0; i--) {
+            curr = max(arr[i], arr[i] + curr);
+            best = max(best, curr);
+            rightMax[i] = best;
+        }
+
+        // Right minimum subarray sums
+        curr = best = arr[n - 1];
+        rightMin[n - 1] = best;
+        for (int i = n - 2; i >= 0; i--) {
+            curr = min(arr[i], arr[i] + curr);
+            best = min(best, curr);
+            rightMin[i] = best;
+        }
+
+        int ans = 0;
+        for (int i = 0; i < n - 1; i++) {
+            ans = max(ans, leftMax[i] - rightMin[i + 1]);
+            ans = max(ans, rightMax[i + 1] - leftMin[i]);
+        }
+
+        return ans;
+    }
+};
