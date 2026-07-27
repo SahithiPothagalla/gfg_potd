@@ -1,0 +1,45 @@
+/* Structure of Binary Tree Node
+class Node {
+public:
+    int data;
+    Node *left;
+    Node *right;
+    Node(int val) {
+        data = val;
+        left = right = nullptr;
+    }
+};*/
+class Solution {
+  public:
+    Node* buildUtil(vector<int> &pre, unordered_map<int,int> &idxMap,
+                     int &preIndex, int low, int high) {
+        if (low > high) return nullptr;
+
+        int val = pre[preIndex++];
+        Node* root = new Node(val);
+
+        if (low == high) return root;              // leaf node (no children)
+
+        // The very next value in pre[] is the left child's value.
+        // Find its position in preMirror to split into blocks.
+        int mid = idxMap[pre[preIndex]];
+
+        // preMirror order is: root, right-block, left-block
+        // so left subtree occupies [mid, high], right subtree occupies [low+1, mid-1]
+        root->left  = buildUtil(pre, idxMap, preIndex, mid, high);
+        root->right = buildUtil(pre, idxMap, preIndex, low + 1, mid - 1);
+
+        return root;
+    }
+
+    Node *constructBinaryTree(vector<int> &pre, vector<int> &preMirror) {
+        int n = pre.size();
+        unordered_map<int,int> idxMap;
+        idxMap.reserve(n * 2);
+        for (int i = 0; i < n; i++) idxMap[preMirror[i]] = i;
+
+        int preIndex = 0;
+        return buildUtil(pre, idxMap, preIndex, 0, n - 1);
+    }
+};
+//GFG POTD solution for 27 July
