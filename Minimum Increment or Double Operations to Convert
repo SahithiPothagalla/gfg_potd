@@ -1,0 +1,35 @@
+class Solution {
+  public:
+    int countMinOperations(vector<int>& arr) {
+        int operation = 0;
+        while(true){
+            int zeroCnt = 0;
+            //check if the all element is even
+            for(int i = 0; i < arr.size(); i++){
+                if(arr[i] == 0) zeroCnt++;
+                else if(arr[i] % 2 == 1){
+                    arr[i]--;
+                    operation++;
+                }
+            }
+            
+            if(zeroCnt == arr.size()) break;
+            
+            bool allEven = true;
+            for(int i = 0; i < arr.size(); i++){
+                if(arr[i] % 2 == 1){
+                    allEven = false;
+                    break;
+                }
+            }
+            if(allEven){
+                for(int i = 0 ; i < arr.size(); i++){
+                    arr[i] = arr[i] / 2;
+                }
+                operation++;
+            }
+        }
+        return operation - 1;
+    }
+};
+//GFG POTD solution for 06 August
