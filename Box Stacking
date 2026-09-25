@@ -1,0 +1,51 @@
+class Solution {
+  public:
+    int maxHeight(vector<int> &height, vector<int> &width,
+                  vector<int> &length) {
+
+        int n = height.size();
+
+        vector<vector<int>> boxes;
+
+        // Generate all 3 rotations of each box
+        for (int i = 0; i < n; i++) {
+            int h = height[i], w = width[i], l = length[i];
+
+            // Rotation 1
+            boxes.push_back({h, max(w, l), min(w, l)});
+
+            // Rotation 2
+            boxes.push_back({w, max(h, l), min(h, l)});
+
+            // Rotation 3
+            boxes.push_back({l, max(h, w), min(h, w)});
+        }
+
+        // Sort by base area in descending order
+        sort(boxes.begin(), boxes.end(), [](const auto &a, const auto &b) {
+            return 1LL * a[1] * a[2] > 1LL * b[1] * b[2];
+        });
+
+        int m = boxes.size();
+        vector<int> dp(m);
+
+        int ans = 0;
+
+        for (int i = 0; i < m; i++) {
+            dp[i] = boxes[i][0];
+
+            for (int j = 0; j < i; j++) {
+                // Box i can be placed on box j
+                if (boxes[j][1] > boxes[i][1] &&
+                    boxes[j][2] > boxes[i][2]) {
+
+                    dp[i] = max(dp[i], dp[j] + boxes[i][0]);
+                }
+            }
+
+            ans = max(ans, dp[i]);
+        }
+
+        return ans;
+    }
+};
