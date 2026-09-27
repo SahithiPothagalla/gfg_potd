@@ -1,0 +1,133 @@
+class Solution {
+public:
+    int longestPath(string s, vector<vector<int>>& edges) {
+        int n = s.size();
+
+        vector<vector<int>> adj(n);
+
+        for (auto &e : edges) {
+            int u = e[0] - 1;
+            int v = e[1] - 1;
+            adj[u].push_back(v);
+            adj[v].push_back(u);
+        }
+
+        vector<int> parent(n, -1), order;
+        parent[0] = -2;
+        order.push_back(0);
+
+        for (int i = 0; i < n; i++) {
+            int u = order[i];
+
+            for (int v : adj[u]) {
+                if (v == parent[u])
+                    continue;
+
+                parent[v] = u;
+                order.push_back(v);
+            }
+        }
+
+        vector<int> down(n, 1), up(n, 1);
+
+        // Longest same-color downward path
+        for (int i = n - 1; i >= 0; i--) {
+            int u = order[i];
+
+            for (int v : adj[u]) {
+                if (parent[v] == u && s[v] == s[u]) {
+                    down[u] = max(down[u], 1 + down[v]);
+                }
+            }
+        }
+
+        // Longest same-color path through parent side
+        for (int u : order) {
+            int best1 = 0, best2 = 0;
+            int id = -1;
+
+            for (int v : adj[u]) {
+                if (parent[v] == u && s[v] == s[u]) {
+                    if (down[v] > best1) {
+                        best2 = best1;
+                        best1 = down[v];
+                        id = v;
+                    } else if (down[v] > best2) {
+                        best2 = down[v];
+                    }
+                }
+            }
+
+            for (int v : adj[u]) {
+                if (parent[v] == u && s[v] == s[u]) {
+                    int best = up[u];
+
+                    if (v == id)
+                        best = max(best, 1 + best2);
+                    else
+                        best = max(best, 1 + best1);
+
+                    up[v] = 1 + best;
+                }
+            }
+        }
+
+        int ans = 1;
+
+        // Same-color paths
+        for (int u = 0; u < n; u++) {
+            int best1 = 0, best2 = 0;
+
+            for (int v : adj[u]) {
+                if (parent[v] == u && s[v] == s[u]) {
+                    int val = down[v];
+
+                    if (val > best1) {
+                        best2 = best1;
+                        best1 = val;
+                    } else if (val > best2) {
+                        best2 = val;
+                    }
+                }
+            }
+
+            ans = max(ans, 1 + best1 + best2);
+        }
+
+        // Mixed R-B paths
+        for (int v = 1; v < n; v++) {
+            int u = parent[v];
+
+            if (s[u] == s[v])
+                continue;
+
+            int uSide = up[u];
+
+            int best1 = 0, best2 = 0;
+            int id = -1;
+
+            for (int x : adj[u]) {
+                if (parent[x] == u && s[x] == s[u]) {
+                    if (down[x] > best1) {
+                        best2 = best1;
+                        best1 = down[x];
+                        id = x;
+                    } else if (down[x] > best2) {
+                        best2 = down[x];
+                    }
+                }
+            }
+
+            if (id == v)
+                uSide = max(uSide, 1 + best2);
+            else
+                uSide = max(uSide, 1 + best1);
+
+            int vSide = down[v];
+
+            ans = max(ans, uSide + vSide);
+        }
+
+        return ans;
+    }
+};
