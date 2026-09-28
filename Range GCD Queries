@@ -1,0 +1,76 @@
+class Solution {
+    vector<int> seg;
+    int n;
+
+    int gcd(int a, int b) {
+        return std::gcd(a, b);
+    }
+
+    void build(int idx, int low, int high, vector<int>& arr) {
+        if (low == high) {
+            seg[idx] = arr[low];
+            return;
+        }
+
+        int mid = low + (high - low) / 2;
+
+        build(2 * idx + 1, low, mid, arr);
+        build(2 * idx + 2, mid + 1, high, arr);
+
+        seg[idx] = gcd(seg[2 * idx + 1], seg[2 * idx + 2]);
+    }
+
+    void update(int idx, int low, int high, int pos, int val) {
+        if (low == high) {
+            seg[idx] = val;
+            return;
+        }
+
+        int mid = low + (high - low) / 2;
+
+        if (pos <= mid)
+            update(2 * idx + 1, low, mid, pos, val);
+        else
+            update(2 * idx + 2, mid + 1, high, pos, val);
+
+        seg[idx] = gcd(seg[2 * idx + 1], seg[2 * idx + 2]);
+    }
+
+    int query(int idx, int low, int high, int l, int r) {
+        // No overlap
+        if (high < l || low > r)
+            return 0;
+
+        // Complete overlap
+        if (l <= low && high <= r)
+            return seg[idx];
+
+        int mid = low + (high - low) / 2;
+
+        int left = query(2 * idx + 1, low, mid, l, r);
+        int right = query(2 * idx + 2, mid + 1, high, l, r);
+
+        return gcd(left, right);
+    }
+
+public:
+    vector<int> processQueries(vector<int>& arr,
+                              vector<vector<int>>& queries) {
+        n = arr.size();
+        seg.resize(4 * n);
+
+        build(0, 0, n - 1, arr);
+
+        vector<int> ans;
+
+        for (auto& q : queries) {
+            if (q[0] == 0) {
+                ans.push_back(query(0, 0, n - 1, q[1], q[2]));
+            } else {
+                update(0, 0, n - 1, q[1], q[2]);
+            }
+        }
+
+        return ans;
+    }
+};
