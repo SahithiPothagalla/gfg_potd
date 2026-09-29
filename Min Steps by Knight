@@ -1,0 +1,56 @@
+class Solution {
+  public:
+    int minStepToReachTarget(vector<int>& knightPos,
+                             vector<int>& targetPos, int n) {
+
+        int sx = knightPos[0];
+        int sy = knightPos[1];
+        int tx = targetPos[0];
+        int ty = targetPos[1];
+
+        if (sx == tx && sy == ty)
+            return 0;
+
+        vector<vector<bool>> visited(n + 1, vector<bool>(n + 1, false));
+
+        // All 8 possible knight moves
+        int dx[] = {-2, -2, -1, -1, 1, 1, 2, 2};
+        int dy[] = {-1, 1, -2, 2, -2, 2, -1, 1};
+
+        queue<pair<int, int>> q;
+
+        q.push({sx, sy});
+        visited[sx][sy] = true;
+
+        int steps = 0;
+
+        while (!q.empty()) {
+            int sz = q.size();
+            steps++;
+
+            while (sz--) {
+                auto [x, y] = q.front();
+                q.pop();
+
+                for (int i = 0; i < 8; i++) {
+                    int nx = x + dx[i];
+                    int ny = y + dy[i];
+
+                    if (nx < 1 || ny < 1 || nx > n || ny > n)
+                        continue;
+
+                    if (visited[nx][ny])
+                        continue;
+
+                    if (nx == tx && ny == ty)
+                        return steps;
+
+                    visited[nx][ny] = true;
+                    q.push({nx, ny});
+                }
+            }
+        }
+
+        return -1;
+    }
+};
