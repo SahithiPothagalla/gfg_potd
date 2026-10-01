@@ -1,0 +1,52 @@
+from collections import deque
+
+class Solution:
+    def minTime(self, duration, dependencies):
+        n = len(duration)
+
+        # Build the dependency graph.
+        adj = [[] for _ in range(n)]
+        indegree = [0] * n
+
+        for edge in dependencies:
+            adj[edge[0]].append(edge[1])
+            indegree[edge[1]] += 1
+
+        # Store the earliest completion time for every module.
+        finishTime = duration[:]
+
+        q = deque()
+
+        # Start with all modules having no dependencies.
+        for i in range(n):
+            if indegree[i] == 0:
+                q.append(i)
+
+        visited = 0
+        res = 0
+
+        # Perform topological traversal.
+        while q:
+
+            node = q.popleft()
+
+            visited += 1
+            res = max(res, finishTime[node])
+
+            # Update completion time of dependent modules.
+            for next in adj[node]:
+
+                finishTime[next] = max(
+                    finishTime[next],
+                    finishTime[node] + duration[next]
+                )
+
+                indegree[next] -= 1
+
+                if indegree[next] == 0:
+                    q.append(next)
+
+        # Cycle detected.
+        if visited != n:
+            return -1
+        return res
