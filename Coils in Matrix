@@ -1,0 +1,71 @@
+class Solution {
+  public:
+    vector<vector<int>> formCoils(int n) {
+        // code here
+        vector<int> result1; 
+        int N=4*n;
+        vector<vector<int>> matrix(N, vector<int>(N));
+
+                int x = 1;
+                for(int i = 0; i < N; i++)
+                    for(int j = 0; j < N; j++)
+                        matrix[i][j] = x++;
+
+
+        int top = 0, bottom = 4 * n - 1, left = 0, right = 4 * n - 1; 
+
+        // COIL 1: Down -> Right -> Up -> Left
+        while (top <= bottom && left <= right) {
+            // Move DOWN along left boundary
+            for (int i = top; i <= bottom; i++) result1.push_back(matrix[i][left]);
+            left++; right--; // Double shrink!
+
+            if (left > right) break;
+
+            // Move RIGHT along bottom boundary
+            for (int j = left; j <= right; j++) result1.push_back(matrix[bottom][j]);
+            bottom--; top++; // Double shrink!
+
+            if (top > bottom) break;
+
+            // Move UP along right boundary
+            for (int i = bottom; i >= top; i--) result1.push_back(matrix[i][right]);
+            right--; left++;
+
+            if (left > right) break;
+
+            // Move LEFT along top boundary
+            for (int j = right; j >= left; j--) result1.push_back(matrix[top][j]);
+            top++; bottom--;
+        }
+
+        vector<int> result2; 
+        top = 0, bottom = 4 * n - 1, left = 0, right = 4 * n - 1; // Reset
+
+        // COIL 2: Up -> Left -> Down -> Right
+        while (top <= bottom && left <= right) {
+            // Move UP along right boundary
+            for (int i = bottom; i >= top; i--) result2.push_back(matrix[i][right]);
+            right--; left++; // Double shrink!
+
+            if (left > right) break;
+
+            // Move LEFT along top boundary
+            for (int j = right; j >= left; j--) result2.push_back(matrix[top][j]);
+            top++; bottom--; 
+
+            if (top > bottom) break;
+
+            // Move DOWN along left boundary
+            for (int i = top; i <= bottom; i++) result2.push_back(matrix[i][left]);
+            left++; right--;
+
+            if (left > right) break;
+
+            // Move RIGHT along bottom boundary
+            for (int j = left; j <= right; j++) result2.push_back(matrix[bottom][j]);
+            bottom--; top++;
+        }
+        return {result1,result2};
+    }
+};
