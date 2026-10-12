@@ -1,0 +1,21 @@
+//GFG POTD solution for 12 oct
+
+class Solution {
+  public:
+    int minSquares(int n, int m) {
+        int res = 0;
+        // Continue until the rectangle becomes empty
+        while (n > 0 && m > 0) {
+            // Ensure n is the larger dimension
+            if (n < m) {
+                swap(n, m);
+            }
+            // Count all possible squares of size m x m that fit
+            res += n / m;
+            // Reduce n to the remainder dimension
+            n %= m;
+        }
+        return res;
+    }
+};
+//for Daily POTD(Unstop/leetcode/GFG) follow @POTDunstop
