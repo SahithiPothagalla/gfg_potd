@@ -1,0 +1,38 @@
+
+class Solution {
+public:
+    int minimumSum(string &s) {
+        int n = s.size();
+
+        // Check whether a palindrome is possible
+        for (int i = 0; i < n / 2; i++) {
+            int j = n - 1 - i;
+
+            if (s[i] != '?' && s[j] != '?' && s[i] != s[j]) {
+                return -1;
+            }
+        }
+
+        // Replace '?' optimally
+        for (int i = 0; i < n / 2; i++) {
+            int j = n - 1 - i;
+
+            if (s[i] == '?' && s[j] == '?') {
+                s[i] = s[j] = 'a';
+            } else if (s[i] == '?') {
+                s[i] = s[j];
+            } else if (s[j] == '?') {
+                s[j] = s[i];
+            }
+        }
+
+        // Calculate the minimum adjacent difference
+        int ans = 0;
+
+        for (int i = 1; i < n; i++) {
+            ans += abs(s[i] - s[i - 1]);
+        }
+
+        return ans;
+    }
+};
