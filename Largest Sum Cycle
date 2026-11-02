@@ -1,0 +1,40 @@
+class Solution {
+public:
+    long long largestSumCycle(vector<int>& edge) {
+        int n = edge.size();
+        vector<int> visited(n, 0);
+        vector<int> pathIndex(n, -1);
+
+        long long ans = -1;
+
+        for (int i = 0; i < n; i++) {
+            if (visited[i]) continue;
+
+            vector<int> path;
+            int curr = i;
+
+            while (curr != -1 && !visited[curr]) {
+                visited[curr] = 1;
+                pathIndex[curr] = path.size();
+                path.push_back(curr);
+                curr = edge[curr];
+            }
+
+            if (curr != -1 && pathIndex[curr] != -1) {
+                long long sum = 0;
+
+                for (int j = pathIndex[curr]; j < (int)path.size(); j++) {
+                    sum += path[j];
+                }
+
+                ans = max(ans, sum);
+            }
+
+            for (int node : path) {
+                pathIndex[node] = -1;
+            }
+        }
+
+        return ans;
+    }
+};
