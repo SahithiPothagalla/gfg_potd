@@ -1,0 +1,36 @@
+
+class Solution {
+public:
+    vector<string> generateUsernames(vector<string> arr) {
+        unordered_set<string> reserved(arr.begin(), arr.end());
+        unordered_set<string> assigned;
+        unordered_map<string, int> cnt;
+
+        vector<string> ans;
+
+        for (string name : arr) {
+            if (assigned.find(name) == assigned.end()) {
+                ans.push_back(name);
+                assigned.insert(name);
+            } 
+            else {
+                int &i = cnt[name];
+                
+                if (i == 0) i = 1;
+
+                string candidate = name + to_string(i);
+
+                while (reserved.count(candidate) || assigned.count(candidate)) {
+                    i++;
+                    candidate = name + to_string(i);
+                }
+
+                ans.push_back(candidate);
+                assigned.insert(candidate);
+                i++;
+            }
+        }
+
+        return ans;
+    }
+};
