@@ -1,0 +1,24 @@
+
+class Solution {
+  public:
+    bool checkWithinK(vector<int>& arr, int k) {
+        unordered_set<int> st;
+
+        for (int i = 0; i < arr.size(); i++) {
+            
+            // Check if element already exists in the window
+            if (st.find(arr[i]) != st.end()) {
+                return true;
+            }
+
+            st.insert(arr[i]);
+
+            // Maintain at most k previous elements
+            if (i >= k) {
+                st.erase(arr[i - k]);
+            }
+        }
+
+        return false;
+    }
+};
