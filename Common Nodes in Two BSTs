@@ -1,0 +1,54 @@
+
+class Solution {
+public:
+    vector<int> findCommon(Node* r1, Node* r2) {
+        vector<int> ans;
+
+        stack<Node*> s1, s2;
+
+        Node* curr1 = r1;
+        Node* curr2 = r2;
+
+        while (true) {
+
+            // Inorder traversal of first BST
+            while (curr1) {
+                s1.push(curr1);
+                curr1 = curr1->left;
+            }
+
+            // Inorder traversal of second BST
+            while (curr2) {
+                s2.push(curr2);
+                curr2 = curr2->left;
+            }
+
+            // Stop if either stack is empty
+            if (s1.empty() || s2.empty())
+                break;
+
+            Node* n1 = s1.top();
+            Node* n2 = s2.top();
+
+            if (n1->data == n2->data) {
+                ans.push_back(n1->data);
+
+                s1.pop();
+                s2.pop();
+
+                curr1 = n1->right;
+                curr2 = n2->right;
+            }
+            else if (n1->data < n2->data) {
+                s1.pop();
+                curr1 = n1->right;
+            }
+            else {
+                s2.pop();
+                curr2 = n2->right;
+            }
+        }
+
+        return ans;
+    }
+};
