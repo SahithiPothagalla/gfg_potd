@@ -1,0 +1,25 @@
+
+class Solution {
+  public:
+    char posInfinite(string &s, int pos) {
+        long long len = s.size();
+        long long step = 1;
+
+        while (pos > len) {
+            long long newLen = 2 * len + step;
+
+            if (pos <= len + step) {
+                return '$';
+            }
+
+            if (pos <= newLen) {
+                pos = newLen - pos + 1;
+            }
+
+            len = newLen;
+            step++;
+        }
+
+        return s[pos - 1];
+    }
+};
